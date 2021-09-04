@@ -40,15 +40,21 @@ function byNicknameForm(client: ServerPlayer): void {
             if (name.length === 0 || message.length === 0) {
                 client.sendMessage("§c[PM] Error! Message or nickname is empty!");
             } else {
-                if (client_name === "1") {
+                if (client_name === name) {
                     client.sendMessage("§c[PM] Error! You cannot send messages to yourself!");
                 } else {
+                    let find: boolean = false;
                     for (let i = 0; i < players.length; i++) {
                         const target = players[i] as ServerPlayer;
                         if (target.getName() === name) {
+                            find = true;
                             client.sendMessage(`[PM] You have sent a message to player §a${name}§r!`);
                             target.sendMessage(`[PM] Message from §a${client_name}§f -> §9${message}§r`);
                             break;
+                        }
+
+                        if (find === false) {
+                            client.sendMessage("§c[PM] Error! Player not found! He may have already left from server.");
                         }
                     }
                 }
@@ -59,36 +65,39 @@ function byNicknameForm(client: ServerPlayer): void {
 
 function byListForm(client: ServerPlayer): void {
     const client_name = client.getName();
-    const names: string[] = getNames("1");
-    const form = new CustomForm();
-    form.setTitle("Private Message");
-    form.addComponent(new FormDropdown("Select a player from the list", names))
-    form.addComponent(new FormInput("Message", "Hello Steve!"));
-    form.sendTo(client.getNetworkIdentifier(), async (data) => {
-        if (data === null) {
-            // pass
-        } else {
-            console.log(data.response);
-            const name = data.response[0];
-            const message = data.response[1];
-            if (message.length === 0) {
-                client.sendMessage("§c[PM] Error! Message is empty!");
+    const names: string[] = getNames(client_name);
+    if (names.length === 0) {
+        client.sendMessage("§c[PM] Error! There are no players on the server besides you!");
+    } else {
+        const form = new CustomForm();
+        form.setTitle("Private Message");
+        form.addComponent(new FormDropdown("Select a player from the list", names))
+        form.addComponent(new FormInput("Message", "Hello Steve!"));
+        form.sendTo(client.getNetworkIdentifier(), async (data) => {
+            if (data === null) {
+                // pass
             } else {
-                let find: boolean = false;
-                for (let i = 0; i < players.length; i++) {
-                    const target = players[i] as ServerPlayer;
-                    if (target.getName() === names[name]) {
-                        find = true;
-                        client.sendMessage(`[PM] You have sent a message to player §a${name}§r!`);
-                        target.sendMessage(`[PM] Message from §a${client_name}§f -> §9${message}§r`);
-                        break;
+                const name = data.response[0];
+                const message = data.response[1];
+                if (message.length === 0) {
+                    client.sendMessage("§c[PM] Error! Message is empty!");
+                } else {
+                    let find: boolean = false;
+                    for (let i = 0; i < players.length; i++) {
+                        const target = players[i] as ServerPlayer;
+                        if (target.getName() === names[name]) {
+                            find = true;
+                            client.sendMessage(`[PM] You have sent a message to player §a${name}§r!`);
+                            target.sendMessage(`[PM] Message from §a${client_name}§f -> §9${message}§r`);
+                            break;
+                        }
+                    }
+
+                    if (find === false) {
+                        client.sendMessage("§c[PM] Error! Player not found! He may have already left from server.");
                     }
                 }
-
-                if (find === false) {
-                    client.sendMessage("§c[PM] Error! Player not found! He may have already left from server.");
-                }
             }
-        }
-    });
+        });
+    }
 }

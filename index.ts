@@ -16,7 +16,6 @@ events.serverClose.on(()=>{
 events.playerJoin.on((pk)=>{
     const client = pk.player.getNetworkIdentifier().getActor() as ServerPlayer;
     players.push(client);
-    console.log(client.getName(), " Added!");
 });
 
 events.networkDisconnected.on(networkIdentifier => {
@@ -24,7 +23,6 @@ events.networkDisconnected.on(networkIdentifier => {
     const index = players.indexOf(client, 0);
     if (index !== -1) {
         delete players[index];
-        console.log(client.getName(), " Rmoved!");
     }
 });
 
