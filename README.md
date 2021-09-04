@@ -3,6 +3,10 @@ An analogue of the /tell command with an interface where you can choose two opti
 
 Demo: play.quartzland.ru:19132
 
+Commands
+----
+    /pm
+
 Screenshots
 ----
 
