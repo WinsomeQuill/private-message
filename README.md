@@ -1,8 +1,6 @@
 # private-message
 An analogue of the /tell command with an interface where you can choose two options for finding a player to send him a message.
 
-Demo: play.quartzland.ru:19132
-
 Commands
 ----
     /pm
